@@ -64,6 +64,14 @@
   .bar{height:9px;background:var(--track);border-radius:99px;overflow:hidden;margin:8px 0 16px}
   .bar > i{display:block;height:100%;border-radius:99px;background:var(--red);transition:width .4s ease}
   .bar.on > i{background:var(--green)} .bar.mid > i{background:var(--amber)}
+  .substats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 16px}
+  .ss{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:8px 11px;display:flex;flex-direction:column;gap:1px}
+  .ss .ss-label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+  .ss .ss-val{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--txt)}
+  .ss input{background:transparent;border:none;color:var(--txt);font-size:18px;font-weight:800;font-family:var(--sans);outline:none;font-variant-numeric:tabular-nums;padding:0;width:100%}
+  .ss input::-webkit-outer-spin-button,.ss input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .ss input[type=number]{-moz-appearance:textfield}
+  .ss:focus-within{border-color:var(--red)}
   .funnel{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
   .metric{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px}
   .metric .m-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;display:flex;justify-content:space-between}
@@ -81,6 +89,12 @@
   .card-input input{flex:1;background:transparent;border:none;color:var(--txt);font-size:20px;font-weight:800;outline:none;font-variant-numeric:tabular-nums;font-family:var(--sans)}
   .card-input input::-webkit-outer-spin-button,.card-input input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
   .card-input .conv{font-size:12px;color:var(--faint);white-space:nowrap}
+  .card-input .lbl-note{color:var(--faint);font-weight:500;text-transform:none;letter-spacing:0}
+  .box-prev{margin-top:0}
+  .box-prev:focus-within{border-color:var(--amber)}
+  .box-prev input:focus-visible{color:var(--amber)}
+  .proj{font-size:12px;color:var(--faint);white-space:nowrap}
+  .proj b{color:var(--amber)}
   .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
   .flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:8px}
   .stage{text-align:center}
@@ -234,7 +248,7 @@ const store={
 };
 let flagT; function flag(){const el=document.getElementById('save-flag'); el.textContent='✓ salvo'; clearTimeout(flagT); flagT=setTimeout(()=>el.textContent='',1400);}
 let data={};
-function d(id){ return data[id] || (data[id]={cotas:0,op:0,vis:0}); }
+function d(id){ const o=data[id]||(data[id]={cotas:0,prev:0,atend:0,op:0,vis:0}); if(o.prev===undefined)o.prev=0; if(o.atend===undefined)o.atend=0; return o; }
 function statusOf(pct){ return pct>=100?'on':pct>=60?'mid':'low'; }
 function render(){
   const host=document.getElementById('stores'); host.innerHTML='';
@@ -259,11 +273,20 @@ function render(){
         <div class="pct num" style="color:var(--${st==='on'?'green':st==='mid'?'amber':'red'})">${pct}%</div>
       </div>
       <div class="bar ${st}"><i style="width:${Math.min(pct,100)}%"></i></div>
+      <div class="substats">
+        <div class="ss"><span class="ss-label">Conversão</span><span class="ss-val conv-atend">${s.atend>0?Math.round(s.cotas/s.atend*100)+'%':'—'}</span></div>
+        <div class="ss"><span class="ss-label">Atendimentos</span><input type="number" min="0" inputmode="numeric" data-id="${l.id}" data-f="atend" value="${s.atend||0}" aria-label="Atendimentos ${l.nome}"></div>
+      </div>
       <div class="card-input">
         <label>Cotas fechadas</label>
         <div class="box">
           <input type="number" min="0" inputmode="numeric" data-id="${l.id}" data-f="cotas" value="${s.cotas}" aria-label="Cotas fechadas ${l.nome}">
           <span class="conv">conv. visita→cota ${conv}%</span>
+        </div>
+        <label style="margin-top:12px">Cotas previstas <span class="lbl-note">· em fechamento, não entra no resultado</span></label>
+        <div class="box box-prev">
+          <input type="number" min="0" inputmode="numeric" data-id="${l.id}" data-f="prev" value="${s.prev||0}" aria-label="Cotas previstas ${l.nome}">
+          <span class="proj">projeção: <b class="proj-val">${s.cotas+(s.prev||0)}</b> de ${l.meta}</span>
         </div>
       </div>
       <div class="funnel" style="margin-top:14px">
@@ -330,6 +353,8 @@ function updateCard(card,id){
   const p=card.querySelector('.pct'); p.textContent=pct+'%'; p.style.color='var(--'+(st==='on'?'green':st==='mid'?'amber':'red')+')';
   const bar=card.querySelector('.bar'); bar.className='bar '+st; bar.querySelector('i').style.width=Math.min(pct,100)+'%';
   card.querySelector('.conv').textContent='conv. visita→cota '+conv+'%';
+  const projEl=card.querySelector('.proj-val'); if(projEl) projEl.textContent=s.cotas+(s.prev||0);
+  const ca=card.querySelector('.conv-atend'); if(ca) ca.textContent=s.atend>0?Math.round(s.cotas/s.atend*100)+'%':'—';
   const badge=card.querySelector('.badge');
   badge.className='badge '+(st==='on'?'b-on':st==='mid'?'b-mid':'b-low');
   badge.textContent=st==='on'?'no alvo':st==='mid'?'no ritmo':'abaixo';
