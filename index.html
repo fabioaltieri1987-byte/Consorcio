@@ -91,14 +91,15 @@
   .arrow .conv{font-size:13px;font-weight:700;color:var(--txt)}
   .arrow .ar{font-size:20px;line-height:1;color:var(--faint)}
   .stage.s-op .s-val{color:var(--txt)} .stage.s-vis .s-val{color:var(--amber)} .stage.s-cota .s-val{color:var(--green)}
-  .digital{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .digital{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
   .dcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;text-align:center;position:relative}
   .dcard .d-num{font-size:36px;font-weight:800;letter-spacing:-.03em}
   .dcard .d-cap{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:600;margin-top:4px}
   .dcard .d-sub{font-size:12px;color:var(--faint);margin-top:6px}
   .dcard:nth-child(1) .d-num{color:var(--txt)}
   .dcard:nth-child(2) .d-num{color:var(--amber)}
-  .dcard:nth-child(3) .d-num{color:var(--green)}
+  .dcard:nth-child(3) .d-num{color:var(--red)}
+  .dcard:nth-child(4) .d-num{color:var(--green)}
   .ramp{display:flex;flex-direction:column;gap:11px}
   .ramp-row{display:grid;grid-template-columns:110px 1fr 60px;align-items:center;gap:14px}
   .ramp-row .r-name{font-weight:700;font-size:14px}
@@ -155,11 +156,12 @@
       <div class="stage s-cota"><div class="s-val num" id="f-cota">31</div><div class="s-label">Cotas</div><div class="s-sub">meta do mês</div></div>
     </div>
   </div>
-  <div class="section-title"><span class="idx">03</span><h2>Motor de venda digital</h2><span class="hint">nova frente · por semana</span></div>
+  <div class="section-title"><span class="idx">03</span><h2>Motor de venda digital</h2><span class="hint">nova frente · foco Tubarão</span></div>
   <div class="digital">
-    <div class="dcard"><div class="d-num num">130</div><div class="d-cap">Disparos</div><div class="d-sub">contatos ativos por semana</div></div>
-    <div class="dcard"><div class="d-num num">30</div><div class="d-cap">Leads gerados</div><div class="d-sub">~23% dos disparos viram lead</div></div>
-    <div class="dcard"><div class="d-num num">6</div><div class="d-cap">Leads por loja</div><div class="d-sub">30 distribuídos nas 5 lojas</div></div>
+    <div class="dcard"><div class="d-num num">120</div><div class="d-cap">Disparos</div><div class="d-sub">contatos ativos por semana</div></div>
+    <div class="dcard"><div class="d-num num">20</div><div class="d-cap">Leads gerados</div><div class="d-sub">~17% dos disparos viram lead</div></div>
+    <div class="dcard"><div class="d-num num">2%</div><div class="d-cap">Conversão</div><div class="d-sub">dos disparos viram cota</div></div>
+    <div class="dcard"><div class="d-num num">~2,4</div><div class="d-cap">Cotas/semana</div><div class="d-sub">~9,6 no mês · Tubarão</div></div>
   </div>
   <div class="section-title"><span class="idx">04</span><h2>Trilha dos 90 dias</h2><span class="hint">de onde saímos → piso de 10</span></div>
   <div class="panel"><div class="ramp" id="ramp"></div></div>
@@ -171,7 +173,7 @@
       <ul>
         <li><b>40 novas oportunidades</b> por loja/mês (200 na rede).</li>
         <li>Alimentar com base de <b>pós-venda</b>, indicações e showroom.</li>
-        <li>Somar os <b>6 leads digitais/semana</b> que chegam por loja.</li>
+        <li>Em <b>Tubarão</b>, somar os <b>20 leads digitais/semana</b>.</li>
       </ul>
     </div>
     <div class="act">
@@ -196,7 +198,8 @@
       <div class="a-tag">DIGITAL</div>
       <h3>Rodar o motor de leads</h3>
       <ul>
-        <li><b>130 disparos/semana</b> com meta de 30 leads.</li>
+        <li><b>120 disparos/semana</b> com meta de 20 leads (foco Tubarão).</li>
+        <li>Conversão de <b>2%</b> dos disparos → ~2,4 cotas/semana (~9,6/mês).</li>
         <li>SLA: <b>contato rápido</b> assim que o lead cai na loja.</li>
         <li>Devolver feedback de qualidade pra afinar os disparos.</li>
       </ul>
