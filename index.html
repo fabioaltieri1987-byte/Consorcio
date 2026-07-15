@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plano de Ação — Consórcio Toyota</title>
+<style>
+  :root{
+    --ink:#0E1420; --surface:#161E2C; --surface-2:#1B2536; --line:#293448;
+    --txt:#EAF0F8; --muted:#8A99AD; --faint:#5D6B80;
+    --red:#E8323C; --red-soft:#3a1418;
+    --green:#34D399; --green-soft:#0f3128;
+    --amber:#F5B301; --amber-soft:#3a2d05;
+    --track:#212C40;
+    --radius:14px;
+    --mono:"SF Mono",ui-monospace,"Cascadia Mono","Roboto Mono",Menlo,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--ink); color:var(--txt); font-family:var(--sans);
+    line-height:1.5; padding:clamp(16px,3vw,40px);
+    background-image:radial-gradient(1200px 600px at 80% -10%, rgba(232,50,60,.10), transparent 60%);
+    min-height:100vh;
+  }
+  .wrap{max-width:1180px;margin:0 auto}
+  .num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+  header{margin-bottom:26px}
+  .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:8px}
+  h1{font-size:clamp(26px,4.5vw,42px);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+  h1 span{color:var(--muted);font-weight:500}
+  .sub{color:var(--muted);margin-top:10px;max-width:60ch;font-size:15px}
+  .deadline{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;font-size:13px;color:var(--txt)}
+  .deadline b{color:var(--red)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 0 4px var(--red-soft)}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0}
+  .kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+  .kpi .label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:600}
+  .kpi .val{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.02em;margin-top:6px}
+  .kpi .val small{font-size:14px;color:var(--faint);font-weight:600}
+  .kpi.accent .val{color:var(--red)}
+  .section-title{display:flex;align-items:baseline;gap:12px;margin:34px 0 16px}
+  .section-title h2{font-size:19px;font-weight:700;letter-spacing:-.01em}
+  .section-title .idx{font-family:var(--mono);font-size:12px;color:var(--red);font-weight:700}
+  .section-title .hint{margin-left:auto;font-size:12px;color:var(--faint)}
+  .stores{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden}
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red);opacity:.7}
+  .card.on::before{background:var(--green)}
+  .card.mid::before{background:var(--amber)}
+  .card-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+  .card-head .name{font-size:17px;font-weight:700}
+  .card-head .goal{font-size:12px;color:var(--muted)}
+  .badge{font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;text-transform:uppercase;letter-spacing:.06em}
+  .badge.b-on{background:var(--green-soft);color:var(--green)}
+  .badge.b-mid{background:var(--amber-soft);color:var(--amber)}
+  .badge.b-low{background:var(--red-soft);color:var(--red)}
+  .cota-row{display:flex;align-items:flex-end;gap:10px;margin-bottom:6px}
+  .cota-big{font-size:38px;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .cota-of{font-size:15px;color:var(--muted);padding-bottom:5px}
+  .cota-of b{color:var(--txt)}
+  .pct{margin-left:auto;font-size:14px;font-weight:700;padding-bottom:6px}
+  .bar{height:9px;background:var(--track);border-radius:99px;overflow:hidden;margin:8px 0 16px}
+  .bar > i{display:block;height:100%;border-radius:99px;background:var(--red);transition:width .4s ease}
+  .bar.on > i{background:var(--green)} .bar.mid > i{background:var(--amber)}
+  .funnel{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .metric{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px}
+  .metric .m-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;display:flex;justify-content:space-between}
+  .metric .m-goal{color:var(--faint)}
+  .metric input{width:100%;background:transparent;border:none;color:var(--txt);font-size:22px;font-weight:800;font-family:var(--sans);padding:4px 0 0;outline:none;font-variant-numeric:tabular-nums}
+  .metric input::-webkit-outer-spin-button,.metric input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .metric input[type=number]{-moz-appearance:textfield}
+  .metric input:focus-visible{color:var(--red)}
+  .metric .mini{height:4px;background:var(--track);border-radius:99px;margin-top:8px;overflow:hidden}
+  .metric .mini>i{display:block;height:100%;background:var(--muted);border-radius:99px;transition:width .3s}
+  .card-input{margin-top:2px}
+  .card-input label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;display:block;margin-bottom:4px}
+  .card-input .box{display:flex;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+  .card-input .box:focus-within{border-color:var(--red)}
+  .card-input input{flex:1;background:transparent;border:none;color:var(--txt);font-size:20px;font-weight:800;outline:none;font-variant-numeric:tabular-nums;font-family:var(--sans)}
+  .card-input input::-webkit-outer-spin-button,.card-input input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .card-input .conv{font-size:12px;color:var(--faint);white-space:nowrap}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:8px}
+  .stage{text-align:center}
+  .stage .s-val{font-size:clamp(28px,5vw,44px);font-weight:800;letter-spacing:-.03em}
+  .stage .s-label{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:600;margin-top:2px}
+  .stage .s-sub{font-size:12px;color:var(--faint);margin-top:3px}
+  .arrow{text-align:center;color:var(--red)}
+  .arrow .conv{font-size:13px;font-weight:700;color:var(--txt)}
+  .arrow .ar{font-size:20px;line-height:1;color:var(--faint)}
+  .stage.s-op .s-val{color:var(--txt)} .stage.s-vis .s-val{color:var(--amber)} .stage.s-cota .s-val{color:var(--green)}
+  .digital{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .dcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;text-align:center;position:relative}
+  .dcard .d-num{font-size:36px;font-weight:800;letter-spacing:-.03em}
+  .dcard .d-cap{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:600;margin-top:4px}
+  .dcard .d-sub{font-size:12px;color:var(--faint);margin-top:6px}
+  .dcard:nth-child(1) .d-num{color:var(--txt)}
+  .dcard:nth-child(2) .d-num{color:var(--amber)}
+  .dcard:nth-child(3) .d-num{color:var(--green)}
+  .ramp{display:flex;flex-direction:column;gap:11px}
+  .ramp-row{display:grid;grid-template-columns:110px 1fr 60px;align-items:center;gap:14px}
+  .ramp-row .r-name{font-weight:700;font-size:14px}
+  .rtrack{position:relative;height:34px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .rtrack .fill-now{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--red),var(--red));opacity:.28}
+  .rtrack .fill-goal{position:absolute;left:0;top:0;bottom:0;border-right:2px dashed var(--green)}
+  .rtrack .lbl{position:absolute;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;padding:0 8px}
+  .rtrack .lbl.now{left:0;color:var(--txt)}
+  .rtrack .lbl.goal{color:var(--green);right:6px}
+  .r-delta{font-size:13px;font-weight:700;text-align:right;color:var(--red)}
+  .actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+  .act{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+  .act .a-tag{font-family:var(--mono);font-size:11px;color:var(--red);font-weight:700;letter-spacing:.05em}
+  .act h3{font-size:15px;font-weight:700;margin:6px 0 10px}
+  .act ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .act li{font-size:13.5px;color:var(--muted);padding-left:18px;position:relative}
+  .act li::before{content:"›";position:absolute;left:2px;color:var(--red);font-weight:700}
+  .act li b{color:var(--txt);font-weight:700}
+  footer{margin-top:36px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--faint)}
+  .reset{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:12px;padding:7px 14px;border-radius:8px;cursor:pointer;font-family:var(--sans)}
+  .reset:hover{border-color:var(--red);color:var(--red)}
+  .reset:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+  .saved{color:var(--green)}
+  @media (max-width:720px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .flow{grid-template-columns:1fr;gap:4px}
+    .arrow{padding:6px 0}
+    .arrow .ar{transform:rotate(90deg);display:inline-block}
+    .digital{grid-template-columns:1fr}
+    .ramp-row{grid-template-columns:90px 1fr 46px;gap:8px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  :focus-visible{outline:2px solid var(--red);outline-offset:2px;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Consórcio · Rede de 5 lojas</div>
+    <h1>Plano de Ação <span>— Meta trimestral</span></h1>
+    <p class="sub">Painel de acompanhamento das metas de cotas, indicadores de atividade e do novo motor de leads digital. Digite o realizado nos campos e o progresso atualiza na hora.</p>
+    <div class="deadline"><span class="dot"></span> Horizonte de <b>90 dias</b> · piso mínimo de <b>10 cotas por loja</b></div>
+  </header>
+  <div class="kpis" id="kpis"></div>
+  <div class="section-title"><span class="idx">01</span><h2>Metas por loja</h2><span class="hint">edite o realizado em cada campo</span></div>
+  <div class="stores" id="stores"></div>
+  <div class="section-title"><span class="idx">02</span><h2>Funil da rede</h2><span class="hint">soma das 5 lojas</span></div>
+  <div class="panel">
+    <div class="flow">
+      <div class="stage s-op"><div class="s-val num" id="f-op">200</div><div class="s-label">Oportunidades</div><div class="s-sub">40 por loja</div></div>
+      <div class="arrow"><div class="conv num" id="c-1">50%</div><div class="ar">→</div></div>
+      <div class="stage s-vis"><div class="s-val num" id="f-vis">100</div><div class="s-label">Visitas</div><div class="s-sub">20 por loja</div></div>
+      <div class="arrow"><div class="conv num" id="c-2">31%</div><div class="ar">→</div></div>
+      <div class="stage s-cota"><div class="s-val num" id="f-cota">31</div><div class="s-label">Cotas</div><div class="s-sub">meta do mês</div></div>
+    </div>
+  </div>
+  <div class="section-title"><span class="idx">03</span><h2>Motor de venda digital</h2><span class="hint">nova frente · por semana</span></div>
+  <div class="digital">
+    <div class="dcard"><div class="d-num num">130</div><div class="d-cap">Disparos</div><div class="d-sub">contatos ativos por semana</div></div>
+    <div class="dcard"><div class="d-num num">30</div><div class="d-cap">Leads gerados</div><div class="d-sub">~23% dos disparos viram lead</div></div>
+    <div class="dcard"><div class="d-num num">6</div><div class="d-cap">Leads por loja</div><div class="d-sub">30 distribuídos nas 5 lojas</div></div>
+  </div>
+  <div class="section-title"><span class="idx">04</span><h2>Trilha dos 90 dias</h2><span class="hint">de onde saímos → piso de 10</span></div>
+  <div class="panel"><div class="ramp" id="ramp"></div></div>
+  <div class="section-title"><span class="idx">05</span><h2>Ações por frente</h2></div>
+  <div class="actions">
+    <div class="act">
+      <div class="a-tag">TOPO DO FUNIL</div>
+      <h3>Gerar oportunidades</h3>
+      <ul>
+        <li><b>40 novas oportunidades</b> por loja/mês (200 na rede).</li>
+        <li>Alimentar com base de <b>pós-venda</b>, indicações e showroom.</li>
+        <li>Somar os <b>6 leads digitais/semana</b> que chegam por loja.</li>
+      </ul>
+    </div>
+    <div class="act">
+      <div class="a-tag">MEIO DO FUNIL</div>
+      <h3>Converter em visita</h3>
+      <ul>
+        <li>Meta de <b>20 visitas</b> por loja — 50% das oportunidades.</li>
+        <li>Agendamento ativo e <b>confirmação no dia anterior</b>.</li>
+        <li>Follow-up de quem não fechou na 1ª visita.</li>
+      </ul>
+    </div>
+    <div class="act">
+      <div class="a-tag">FUNDO DO FUNIL</div>
+      <h3>Fechar cotas</h3>
+      <ul>
+        <li>Criciúma e Tubarão: <b>40% de conversão</b> visita→cota.</li>
+        <li>Araranguá, Lages e Videira precisam <b>dobrar</b> o ritmo (5→10).</li>
+        <li>Trabalhar por equipe: <b>direta, varejo e pós-venda</b>.</li>
+      </ul>
+    </div>
+    <div class="act">
+      <div class="a-tag">DIGITAL</div>
+      <h3>Rodar o motor de leads</h3>
+      <ul>
+        <li><b>130 disparos/semana</b> com meta de 30 leads.</li>
+        <li>SLA: <b>contato rápido</b> assim que o lead cai na loja.</li>
+        <li>Devolver feedback de qualidade pra afinar os disparos.</li>
+      </ul>
+    </div>
+  </div>
+  <footer>
+    <span>Os dados que você digitar ficam salvos neste navegador. <span class="saved" id="save-flag"></span></span>
+    <button class="reset" id="reset">Zerar realizado</button>
+  </footer>
+</div>
+<script>
+const LOJAS=[
+  {id:'criciuma',nome:'Criciúma',meta:8},
+  {id:'tubarao',nome:'Tubarão',meta:8},
+  {id:'ararangua',nome:'Araranguá',meta:5},
+  {id:'lages',nome:'Lages',meta:5},
+  {id:'videira',nome:'Videira',meta:5},
+];
+const META_OP=40, META_VIS=20, META_90=10, KEY='painel-consorcio-v1';
+let mem={};
+const store={
+  async get(){
+    try{ if(window.storage?.get){const r=await window.storage.get(KEY,false); return r? JSON.parse(r.value):{};} }catch(e){}
+    try{ const v=localStorage.getItem(KEY); return v?JSON.parse(v):{}; }catch(e){}
+    return mem;
+  },
+  async set(obj){
+    mem=obj;
+    try{ if(window.storage?.set){await window.storage.set(KEY,JSON.stringify(obj),false); flag(); return;} }catch(e){}
+    try{ localStorage.setItem(KEY,JSON.stringify(obj)); flag(); }catch(e){}
+  }
+};
+let flagT; function flag(){const el=document.getElementById('save-flag'); el.textContent='✓ salvo'; clearTimeout(flagT); flagT=setTimeout(()=>el.textContent='',1400);}
+let data={};
+function d(id){ return data[id] || (data[id]={cotas:0,op:0,vis:0}); }
+function statusOf(pct){ return pct>=100?'on':pct>=60?'mid':'low'; }
+function render(){
+  const host=document.getElementById('stores'); host.innerHTML='';
+  let totCota=0,totOp=0,totVis=0,totMeta=0;
+  LOJAS.forEach(l=>{
+    const s=d(l.id);
+    const pct=Math.round((s.cotas/l.meta)*100);
+    const st=statusOf(pct);
+    const conv = s.vis>0 ? Math.round((s.cotas/s.vis)*100) : 0;
+    totCota+=s.cotas; totOp+=s.op; totVis+=s.vis; totMeta+=l.meta;
+    const badge = st==='on'?'<span class="badge b-on">no alvo</span>': st==='mid'?'<span class="badge b-mid">no ritmo</span>':'<span class="badge b-low">abaixo</span>';
+    const card=document.createElement('div');
+    card.className='card '+(st==='on'?'on':st==='mid'?'mid':'');
+    card.innerHTML=`
+      <div class="card-head">
+        <div><div class="name">${l.nome}</div><div class="goal">meta ${l.meta} cotas/mês · piso 90d: ${META_90}</div></div>
+        ${badge}
+      </div>
+      <div class="cota-row">
+        <div class="cota-big num">${s.cotas}</div>
+        <div class="cota-of">de <b>${l.meta}</b></div>
+        <div class="pct num" style="color:var(--${st==='on'?'green':st==='mid'?'amber':'red'})">${pct}%</div>
+      </div>
+      <div class="bar ${st}"><i style="width:${Math.min(pct,100)}%"></i></div>
+      <div class="card-input">
+        <label>Cotas fechadas</label>
+        <div class="box">
+          <input type="number" min="0" inputmode="numeric" data-id="${l.id}" data-f="cotas" value="${s.cotas}" aria-label="Cotas fechadas ${l.nome}">
+          <span class="conv">conv. visita→cota ${conv}%</span>
+        </div>
+      </div>
+      <div class="funnel" style="margin-top:14px">
+        <div class="metric">
+          <div class="m-label"><span>Oportunidades</span><span class="m-goal">/${META_OP}</span></div>
+          <input type="number" min="0" inputmode="numeric" data-id="${l.id}" data-f="op" value="${s.op}" aria-label="Oportunidades ${l.nome}">
+          <div class="mini"><i style="width:${Math.min(s.op/META_OP*100,100)}%"></i></div>
+        </div>
+        <div class="metric">
+          <div class="m-label"><span>Visitas</span><span class="m-goal">/${META_VIS}</span></div>
+          <input type="number" min="0" inputmode="numeric" data-id="${l.id}" data-f="vis" value="${s.vis}" aria-label="Visitas ${l.nome}">
+          <div class="mini"><i style="width:${Math.min(s.vis/META_VIS*100,100)}%"></i></div>
+        </div>
+      </div>`;
+    host.appendChild(card);
+  });
+  const pctRede=Math.round(totCota/totMeta*100);
+  document.getElementById('kpis').innerHTML=`
+    ${kpi('Meta do mês', totMeta+' <small>cotas</small>','accent')}
+    ${kpi('Realizado', totCota+' <small>de '+totMeta+'</small>')}
+    ${kpi('Atingimento', pctRede+'<small>%</small>')}
+    ${kpi('Meta em 90 dias', (LOJAS.length*META_90)+' <small>cotas/mês</small>')}`;
+  const fOp = totOp||LOJAS.length*META_OP;
+  const fVis= totVis||LOJAS.length*META_VIS;
+  const fCota= totCota||totMeta;
+  document.getElementById('f-op').textContent=fOp;
+  document.getElementById('f-vis').textContent=fVis;
+  document.getElementById('f-cota').textContent=fCota;
+  document.getElementById('c-1').textContent=fOp?Math.round(fVis/fOp*100)+'%':'—';
+  document.getElementById('c-2').textContent=fVis?Math.round(fCota/fVis*100)+'%':'—';
+  const ramp=document.getElementById('ramp'); ramp.innerHTML='';
+  LOJAS.forEach(l=>{
+    const nowPct=Math.min(l.meta/META_90*100,100);
+    const delta=META_90-l.meta;
+    const row=document.createElement('div'); row.className='ramp-row';
+    row.innerHTML=`
+      <div class="r-name">${l.nome}</div>
+      <div class="rtrack">
+        <div class="fill-now" style="width:${nowPct}%"></div>
+        <div class="fill-goal" style="width:100%"></div>
+        <div class="lbl now num">hoje ${l.meta}</div>
+        <div class="lbl goal num">${META_90}</div>
+      </div>
+      <div class="r-delta num">+${delta}</div>`;
+    ramp.appendChild(row);
+  });
+}
+function kpi(label,val,cls=''){return `<div class="kpi ${cls}"><div class="label">${label}</div><div class="val num">${val}</div></div>`;}
+document.addEventListener('input',e=>{
+  const t=e.target; if(t.tagName!=='INPUT'||!t.dataset.id) return;
+  const v=Math.max(0,parseInt(t.value)||0);
+  d(t.dataset.id)[t.dataset.f]=v;
+  store.set(data);
+  refreshTotals();
+  const card=t.closest('.card');
+  if(card){ updateCard(card,t.dataset.id); }
+});
+function updateCard(card,id){
+  const l=LOJAS.find(x=>x.id===id), s=d(id);
+  const pct=Math.round(s.cotas/l.meta*100), st=statusOf(pct);
+  const conv=s.vis>0?Math.round(s.cotas/s.vis*100):0;
+  card.className='card '+(st==='on'?'on':st==='mid'?'mid':'');
+  card.querySelector('.cota-big').textContent=s.cotas;
+  const p=card.querySelector('.pct'); p.textContent=pct+'%'; p.style.color='var(--'+(st==='on'?'green':st==='mid'?'amber':'red')+')';
+  const bar=card.querySelector('.bar'); bar.className='bar '+st; bar.querySelector('i').style.width=Math.min(pct,100)+'%';
+  card.querySelector('.conv').textContent='conv. visita→cota '+conv+'%';
+  const badge=card.querySelector('.badge');
+  badge.className='badge '+(st==='on'?'b-on':st==='mid'?'b-mid':'b-low');
+  badge.textContent=st==='on'?'no alvo':st==='mid'?'no ritmo':'abaixo';
+  const minis=card.querySelectorAll('.mini > i');
+  minis[0].style.width=Math.min(s.op/META_OP*100,100)+'%';
+  minis[1].style.width=Math.min(s.vis/META_VIS*100,100)+'%';
+}
+function refreshTotals(){
+  let totCota=0,totOp=0,totVis=0,totMeta=0;
+  LOJAS.forEach(l=>{const s=d(l.id);totCota+=s.cotas;totOp+=s.op;totVis+=s.vis;totMeta+=l.meta;});
+  const pctRede=Math.round(totCota/totMeta*100);
+  document.getElementById('kpis').children[1].querySelector('.val').innerHTML=totCota+' <small>de '+totMeta+'</small>';
+  document.getElementById('kpis').children[2].querySelector('.val').innerHTML=pctRede+'<small>%</small>';
+  const fOp=totOp||LOJAS.length*META_OP, fVis=totVis||LOJAS.length*META_VIS, fCota=totCota||totMeta;
+  document.getElementById('f-op').textContent=fOp;
+  document.getElementById('f-vis').textContent=fVis;
+  document.getElementById('f-cota').textContent=fCota;
+  document.getElementById('c-1').textContent=fOp?Math.round(fVis/fOp*100)+'%':'—';
+  document.getElementById('c-2').textContent=fVis?Math.round(fCota/fVis*100)+'%':'—';
+}
+document.getElementById('reset').addEventListener('click',()=>{
+  data={}; store.set(data); render();
+});
+(async()=>{ data=await store.get()||{}; render(); })();
+</script>
+</body>
+</html>
